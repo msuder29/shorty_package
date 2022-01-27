@@ -8,4 +8,4 @@
 #' @import rstudioapi
 #'
 #' @export
-script_location <- function() {dirname(getActiveDocumentContext()$path)}
+script_location <- function() {dirname(rstudioapi::getActiveDocumentContext()$path)}
