@@ -35,12 +35,16 @@ Salary_Projection <- function(starting_salary, Bonus_pct, Growth_average = 0.03,
     
     cs <- max(career_trajectory$Salary)
     
+    sal_inc <- cs + (Growth_average * cs)
+    
+    tycomp <- sal_inc + (sal_inc * .15)
+    
     temp <- data.frame(
       Year = counter
-      ,Salary = cs + (Growth_average * cs)
+      ,Salary = sal_inc
       ,Bonus = Bonus_pct
       ,Yearly_Increase = Growth_average
-      ,Total_Yearly_Comp = cs + (cs * Bonus_pct)
+      ,Total_Yearly_Comp = tycomp
     )
     
     career_trajectory <- rbind(career_trajectory, temp)
