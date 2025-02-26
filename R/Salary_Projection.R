@@ -10,13 +10,13 @@
 #'
 #' @export
 
-Salary_Projection <- function(starting_salary, Bonus_pct, Growth_average = 0.03, timeframe, inflation_rate = 0.02) {
+Salary_Projection <- function(starting_salary, Bonus_pct, Growth_min = 0.03, Growth_max = 0.05, timeframe, inflation_rate = 0.02) {
   # Initialize the data frame
   career_trajectory <- data.frame(
     Year = 0,
     Salary = starting_salary,
     Bonus = starting_salary * Bonus_pct,
-    Yearly_Increase = Growth_average,
+    Yearly_Increase = NA,
     Total_Yearly_Comp = starting_salary + (starting_salary * Bonus_pct),
     Adjusted_Comp = starting_salary + (starting_salary * Bonus_pct)  # Initial adjusted compensation
   )
@@ -24,6 +24,7 @@ Salary_Projection <- function(starting_salary, Bonus_pct, Growth_average = 0.03,
   # Loop to calculate salary projection
   for (year in 1:timeframe) {
     previous_salary <- career_trajectory$Salary[year]
+    Growth_average <- runif(1, min = Growth_min, max = Growth_max)  # Generate random growth rate between 3% and 5%
     new_salary <- previous_salary * (1 + Growth_average)
     new_bonus <- new_salary * Bonus_pct
     total_comp <- new_salary + new_bonus
