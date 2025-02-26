@@ -9,49 +9,41 @@
 #'
 #' @export
 
-Payback_Period <- function(Initial_Investment, Cost_Savings, Additional_Payments = 0) {
-  
+payback_plan <- function(Initial_Investment, Cost_Savings, Additional_Payments = 0) {
   initial_investment <- Initial_Investment
-  
-  Cost_savings <- Cost_Savings
-  
-  
-  ROI <- data.frame(
-    Months = 0
-    ,Investment = initial_investment
-    , Savings = 0
-    , Delta = initial_investment - 0)
-  
+  cost_savings <- Cost_Savings
   add_payment <- Additional_Payments
   
-  payback <- 0 
+  # Initialize the data frame
+  ROI <- data.frame(
+    Months = 0,
+    Investment = initial_investment,
+    Savings = 0,
+    Delta = initial_investment
+  )
   
+  payback <- 0
   counter <- 0
   
-  
   while (payback < initial_investment) {
-    
     counter <- counter + 1
-    
-    payback <- max(ROI$Savings) + Cost_savings + add_payment
+    payback <- payback + cost_savings + add_payment
     
     temp <- data.frame(
-      Months = counter
-      ,Investment = NA
-      , Savings = payback
-      , Delta = initial_investment - payback)
+      Months = counter,
+      Investment = NA,
+      Savings = payback,
+      Delta = initial_investment - payback
+    )
     
     ROI <- rbind(ROI, temp)
-    
   }
   
-  assign("Payback_DF",ROI,envir = .GlobalEnv)
-  View(Payback_DF)
+  assign("Payback_DF", ROI, envir = .GlobalEnv)
+  # View(Payback_DF)
   
-  max(ROI$Months) / 12
-  
-  
+  return(max(ROI$Months) / 12)
 }
-
-
+  
+  
 

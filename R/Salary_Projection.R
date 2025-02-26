@@ -6,59 +6,43 @@
 #' @param Bonus_pct numeric value that represents annual bonus as a percentage
 #' @param Growth_average numeric value that represents expected yearly merit raise (defualts to 3%)
 #' @param timeframe numeric value that represents number of years for projection
+#' @param inflation_rate numeric value that represents expected inflation
 #'
 #' @export
 
-Salary_Projection <- function(starting_salary, Bonus_pct, Growth_average = 0.03, timeframe) {
-  
-  timeframe <- timeframe
-  
-  starting_salary <- starting_salary
-  
-  Bonus_pct <- Bonus_pct
-  
-  Growth_average <- Growth_average
-  
+Salary_Projection <- function(starting_salary, Bonus_pct, Growth_average = 0.03, timeframe, inflation_rate = 0.02) {
+  # Initialize the data frame
   career_trajectory <- data.frame(
-    Year = 0
-    ,Salary = starting_salary
-    ,Bonus = Bonus_pct
-    ,Yearly_Increase = Growth_average
-    ,Total_Yearly_Comp = starting_salary + (starting_salary * Bonus_pct)
+    Year = 0,
+    Salary = starting_salary,
+    Bonus = starting_salary * Bonus_pct,
+    Yearly_Increase = Growth_average,
+    Total_Yearly_Comp = starting_salary + (starting_salary * Bonus_pct),
+    Adjusted_Comp = starting_salary + (starting_salary * Bonus_pct)  # Initial adjusted compensation
   )
   
-  counter <- 0
-  
-  while (counter < timeframe) {
-    
-    counter <- counter + 1
-    
-    cs <- max(career_trajectory$Salary)
-    
-    sal_inc <- cs + (Growth_average * cs)
-    
-    tycomp <- sal_inc + (sal_inc * .15)
+  # Loop to calculate salary projection
+  for (year in 1:timeframe) {
+    previous_salary <- career_trajectory$Salary[year]
+    new_salary <- previous_salary * (1 + Growth_average)
+    new_bonus <- new_salary * Bonus_pct
+    total_comp <- new_salary + new_bonus
+    adjusted_comp <- total_comp / ((1 + inflation_rate) ^ year)  # Adjust for inflation
     
     temp <- data.frame(
-      Year = counter
-      ,Salary = sal_inc
-      ,Bonus = Bonus_pct
-      ,Yearly_Increase = Growth_average
-      ,Total_Yearly_Comp = tycomp
+      Year = year,
+      Salary = new_salary,
+      Bonus = new_bonus,
+      Yearly_Increase = Growth_average,
+      Total_Yearly_Comp = total_comp,
+      Adjusted_Comp = adjusted_comp
     )
     
     career_trajectory <- rbind(career_trajectory, temp)
-    
-    
-    
   }
   
-  
-  assign("Career_Projection",career_trajectory,envir = .GlobalEnv)
-  View(Career_Projection)
-  
-  
+  # Return the data frame
+  return(career_trajectory)
 }
-
 
 
